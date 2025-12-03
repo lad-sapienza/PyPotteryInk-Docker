@@ -105,13 +105,88 @@ docker compose down -v
 docker compose up -d
 ```
 
+## GPU Support
+
+### NVIDIA GPU (Linux/Windows)
+
+To enable NVIDIA GPU acceleration:
+
+**Linux (Ubuntu/Debian):**
+```bash
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
+curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -
+curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+sudo apt-get update && sudo apt-get install -y nvidia-container-toolkit
+sudo systemctl restart docker
+```
+
+**Windows with Docker Desktop:**
+1. Install [NVIDIA GPU drivers](https://www.nvidia.com/Download/index.aspx)
+2. Install [Docker Desktop for Windows](https://docs.docker.com/desktop/install/windows-install/) with WSL 2 backend
+3. Enable WSL 2 integration in Docker Desktop settings
+4. GPU support is automatically available (no additional toolkit needed)
+
+**Start with GPU support:**
+```bash
+docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d
+```
+
+**Verify GPU is detected:**
+```bash
+docker compose logs app | grep -i "Using device"
+# Should show: "Using device: cuda" instead of "cpu"
+```
+
+**Verify GPU is detected:**
+```bash
+docker compose logs app | grep -i "Using device"
+# Should show: "Using device: cuda" instead of "cpu"
+```
+
+### Apple Silicon (MPS)
+
+**Important:** Docker on macOS cannot access the Metal GPU. For best performance on Apple Silicon:
+
+**Option 1: Native Installation (Recommended)**
+```bash
+git clone https://github.com/lrncrd/PyPotteryInk.git
+cd PyPotteryInk
+python install.py
+./PyPotteryInk_UNIX.sh
+```
+
+**Option 2: Docker (CPU only)**
+The current Docker setup works on Apple Silicon but uses CPU only. This is still useful for:
+- Consistent environment across teams
+- Easy deployment and cleanup
+- Isolation from host system
+
+The PyPotteryInk installer will automatically detect and use GPU/MPS if available (native installation only).
+
+## Deployment
+
+### Share with Others
+1. Push this repository to GitHub
+2. Others can clone and run with:
+   ```bash
+   git clone https://github.com/lad-sapienza/PyPotteryInk-Docker.git
+   cd PyPotteryInk-Docker
+   docker compose up -d
+   ```
+
 ## Project Structure
 ```
 .
-├── Dockerfile           # Python 3.12 base image with dependencies
-├── docker-compose.yml   # Service configuration
-├── .dockerignore        # Excludes unnecessary files
-├── .gitignore          # Git ignore patterns
+├── Dockerfile              # Python 3.12 base image with dependencies
+├── docker-compose.yml      # Main service configuration (CPU)
+├── docker-compose.gpu.yml  # GPU override (optional)
+├── .dockerignore           # Excludes unnecessary files
+├── .gitignore              # Git ignore patterns
+└── README.md               # This file
+```
+
+## License
+This Docker setup is provided as-is. PyPotteryInk is licensed under its own terms - see the [original repository](https://github.com/lrncrd/PyPotteryInk).
 └── README.md           # This file
 ```
 
