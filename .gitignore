@@ -1,0 +1,20 @@
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+
+# Docker volumes (optional - uncomment if you want to include volume backups)
+# docker-compose.override.yml

@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+
+# VCS and IDE
+.git/
+.gitignore
+*.swp
+.vscode/
+.idea/
+
+# Runtime
+.env
+.env.*
+*.log
+
+# Build
+dist/
+build/
+node_modules/
+
+# OS
+.DS_Store

@@ -1,0 +1,29 @@
+name: potteryink
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: potteryink-app:latest
+    ports:
+      - "5001:5003"
+    restart: unless-stopped
+    volumes:
+      - potteryink-data:/app/data
+    command: >
+      bash -c '
+      if [ ! -f /app/data/.installed ]; then
+        git clone https://github.com/lrncrd/PyPotteryInk.git /app/data/PyPotteryInk &&
+        cd /app/data/PyPotteryInk &&
+        python install.py &&
+        touch /app/data/.installed;
+      fi &&
+      cd /app/data/PyPotteryInk &&
+      sed -i "s/host='"'"'127.0.0.1'"'"'/host='"'"'0.0.0.0'"'"'/g" app.py &&
+      . .venv/bin/activate &&
+      python app.py
+      '
+
+volumes:
+  potteryink-data:
