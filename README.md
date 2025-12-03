@@ -10,30 +10,22 @@ Production-ready Docker setup for [PyPotteryInk](https://github.com/lrncrd/PyPot
 
 1. **Clone this repository:**
    ```bash
-   git clone https://github.com/YOUR_USERNAME/potteryink-docker.git
-   cd potteryink-docker
+   git clone https://github.com/lad-sapienza/PyPotteryInk-Docker.git
+   cd PyPotteryInk-Docker
    ```
 
 2. **Start the application:**
    ```bash
-## Configuration
+   docker compose up -d
+   ```
 
-### Persistent Storage
-Application data (models, dependencies) is stored in a Docker volume named `potteryink_potteryink-data`. This means:
-- **First start**: Downloads PyTorch and models (~5-10 minutes)
-- **Subsequent starts**: Uses cached data (starts in ~10 seconds)
-- **Rebuilds** (`--build`): Only rebuilds Docker image, data persists
+3. **Wait for installation** (first run only, ~5-10 minutes):
+   ```bash
+   docker compose logs -f app
+   ```
+   Wait until you see: `* Running on http://0.0.0.0:5003`
 
-### Container Bootstrap
-On first run, the container automatically:
-1. Clones [PyPotteryInk](https://github.com/lrncrd/PyPotteryInk) from GitHub
-2. Runs `python install.py` to set up dependencies and download models
-3. Modifies Flask to bind to `0.0.0.0` for external access
-4. Starts the application with `python app.py`
-
-### Ports
-- **Host**: `5001` → **Container**: `5003`
-- Change host port in `docker-compose.yml` if 5001 is in use
+4. **Access the application:**
    ```
    http://localhost:5001
    ```
@@ -68,7 +60,23 @@ docker compose up -d
 
 ## Configuration
 
+### Persistent Storage
+Application data (models, dependencies) is stored in a Docker volume named `potteryink_potteryink-data`. This means:
+- **First start**: Downloads PyTorch and models (~5-10 minutes)
+- **Subsequent starts**: Uses cached data (starts in ~10 seconds)
+- **Rebuilds** (`--build`): Only rebuilds Docker image, data persists
+
 ### Container Bootstrap
+On first run, the container automatically:
+1. Clones [PyPotteryInk](https://github.com/lrncrd/PyPotteryInk) from GitHub
+2. Runs `python install.py` to set up dependencies and download models
+3. Modifies Flask to bind to `0.0.0.0` for external access
+4. Starts the application with `python app.py`
+
+### Ports
+- **Host**: `5001` → **Container**: `5003`
+- Change host port in `docker-compose.yml` if 5001 is in use
+
 ## Troubleshooting
 
 **Connection reset on first start?**
@@ -97,23 +105,13 @@ docker compose down -v
 docker compose up -d
 ```
 
-## Deployment
-
-### Share with Others
-1. Push this repository to GitHub
-2. Others can clone and run with:
-   ```bash
-   git clone YOUR_REPO_URL
-   cd potteryink-docker
-   docker compose up -d
-   ```
-
 ## Project Structure
 ```
 .
 ├── Dockerfile           # Python 3.12 base image with dependencies
 ├── docker-compose.yml   # Service configuration
 ├── .dockerignore        # Excludes unnecessary files
+├── .gitignore          # Git ignore patterns
 └── README.md           # This file
 ```
 
